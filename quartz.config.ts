@@ -16,7 +16,7 @@ const config: QuartzConfig = {
             provider: "plausible",
         },
         locale: "zh-CN",
-        baseUrl: "northgreen.github.io/ictye-public-note",
+        baseUrl: "northgreen.github.io/ictye-public-note/",
         ignorePatterns: ["private", "templates", ".obsidian"],
         defaultDateType: "modified",
         theme: {

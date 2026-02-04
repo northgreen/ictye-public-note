@@ -5,7 +5,7 @@ import { pageResources, renderPage } from "../../components/renderPage"
 import { FullPageLayout } from "../../cfg"
 import { FullSlug } from "../../util/path"
 import { sharedPageComponents } from "../../../quartz.layout"
-import { NotFound } from "../../components"
+import { NotFound,Flex,Darkmode,ReaderMode,Search,Explorer } from "../../components"
 import { defaultProcessedContent } from "../vfile"
 import { write } from "./helpers"
 import { i18n } from "../../i18n"
@@ -15,7 +15,19 @@ export const NotFoundPage: QuartzEmitterPlugin = () => {
     ...sharedPageComponents,
     pageBody: NotFound(),
     beforeBody: [],
-    left: [],
+    left: [
+        Flex({
+            components: [
+                {
+                    Component: Search(),
+                    grow: true,
+                },
+                { Component: Darkmode() },
+                { Component: ReaderMode() },
+            ],
+        }),
+        Explorer(),
+    ],
     right: [],
   }
 
@@ -31,7 +43,7 @@ export const NotFoundPage: QuartzEmitterPlugin = () => {
       const cfg = ctx.cfg.configuration
       const slug = "404" as FullSlug
 
-      const url = new URL(`https://${cfg.baseUrl ?? "example.com"}`)
+      const url = new URL(`https://${cfg.baseUrl ?? "localhost:8080"}`)
       const path = url.pathname as FullSlug
       const notFound = i18n(cfg.locale).pages.error.title
       const [tree, vfile] = defaultProcessedContent({
