@@ -21,7 +21,27 @@ tags:
 
 ## 具体的实现
 
-其实这方面你大可以只实现导入或者保存的，或者只在编辑器侧使用再者只在
+根据上面的介绍其实也能想到ResourceLoader和ResourceSaver都提供了类似AddResourceFormatSaver的接口用来将你的ResourceFormater注册进去（gdscript的话应该是snake_case的命名，都一样的）
+
+这几个类你基本的需要考虑有
+- 用于识别文件的拓展名
+- 文件的基本的格式
+- 类型所对应的类
+- 这个文件的uid的保存方式（可选）
+
+现在假设我们要让Godot引擎有读写CSV文件的能力，或者说是能将CSV当作自己的一个类型的能力
+
+就让我们新建一个插件吧
+
+![[Pasted image 20260207101517.png]]
+
+### ResourceFormatSaver
+
+对于这个类，主要需要实现的是`Save`方法
+
+
+
+### ResourceFormatLoader
 
 ## 导入
 
