@@ -29,17 +29,17 @@ tags:
 - 类型所对应的类
 - 这个文件的uid的保存方式（可选）
 
-现在假设我们要让Godot引擎有读写CSV文件的能力，或者说是能将CSV当作自己的一个类型的能力
+现在假设我们要让Godot引擎有使用CSV文件的能力，或者说是能将CSV当作自己的一个类型的能力
 
-就让我们新建一个插件吧
+显而易见，我们的任务是：
+- 创建表示CSV表格的类
+- 创建两个Formater类
+- 将上面这些都注册到引擎中
 
-![[Pasted image 20260207101517.png]]
-
+这里的话
 ### ResourceFormatSaver
 
 对于这个类，主要需要实现的是`Save`方法
-
-
 
 ### ResourceFormatLoader
 
