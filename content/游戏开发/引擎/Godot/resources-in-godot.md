@@ -36,10 +36,74 @@ tags:
 - 创建两个Formater类
 - 将上面这些都注册到引擎中
 
-这里的话
+这里的话让我们实现这个格式：
+```csharp title="CsvResource.cs"
+using Godot;
+
+namespace SLDemo.addons.csvimport;
+
+public partial class CsvResource : Resource
+{
+    [Export] public Godot.Collections.Array<Godot.Collections.Array<string>> Data { get; set; } = [];
+
+    public void InsertRow(int row, Godot.Collections.Array<string> values) =>
+        Data.Insert(row, values);
+
+    public void Insert(int row, int col, string value) =>
+        Data[row].Insert(col, value);
+}
+```
+
+核心只是这个两层套娃的Array
+
+为了将这个插件注册（实际上只是建立了一个方便创建的东西），还需要创建一个插件：
+![[Pasted image 20260207101517.png]]
+
+然后创建这样的脚本：
+
+```csharp title="CsvImport.cs"
+#if TOOLS
+using Godot;
+
+[Tool]
+public partial class CsvImport : EditorPlugin
+{
+    private readonly string FormatPath = "res://addons/csvimport/CsvResource.cs"; 
+    public override void _EnterTree()
+    {
+		// 注册这个类型，图标是随便填写的
+        AddCustomType(
+                "CsvResource",
+                "Resource",
+                ResourceLoader.Load<Script>(FormatPath),
+                EditorInterface.Singleton.GetEditorTheme().GetIcon("Node", "EditorIcons"));
+    }
+
+    public override void _ExitTree()
+    {
+	    // 移除这个类型
+        RemoveCustomType("CsvResource");
+    }
+}
+#endif
+```
+
+现在我们就能在编辑器里面看到我们的类型被成功地创建了
+
+![[Pasted image 20260212154632.png]]
+
+接下来让我们先从更简单的来说
 ### ResourceFormatSaver
 
-对于这个类，主要需要实现的是`Save`方法
+对于这个类，主要需要实现的是这几个方法：
+- `Error Save(resource: Resource, path: String, flags: int)` ：顾名思义，就是当保存的时候调用的方法，我们要做的就是将
+- `bool Recognize(resource: Resource) `：这个函数就是用来判断此保存程序能不能保存给定的资源对象
+- `PackedStringArray GetRecognizedExtensions(resource: Resource)`：此函数应该根据传入的Resource返回拓展名列表
+
+另外其他的几个函数具体可以参考官方的文档
+
+不过在此之前我们先实现一个基础的CsvFormater类来统一管理这些Save和Load的操作：
+
 
 ### ResourceFormatLoader
 
