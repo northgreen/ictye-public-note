@@ -9,7 +9,7 @@ export const sharedPageComponents: SharedLayout = {
     footer: Component.Footer({
         links: {
             "GitHub Home Page": "https://github.com/northgreen",
-            "Github Repo":"https://github.com/northgreen/ictye-public-note",
+            "Github Repo": "https://github.com/northgreen/ictye-public-note",
         },
     }),
 }
@@ -25,6 +25,7 @@ export const defaultContentPageLayout: PageLayout = {
             condition: (page) => page.fileData.slug !== "index",
         }),
     ],
+    afterBody: [],
     left: [
         Component.PageTitle(),
         Component.MobileOnly(Component.Spacer()),
@@ -51,6 +52,7 @@ export const defaultContentPageLayout: PageLayout = {
 // components for pages that display lists of pages  (e.g. tags or folders)
 export const defaultListPageLayout: PageLayout = {
     beforeBody: [Component.Breadcrumbs(), Component.ArticleTitle(), Component.ContentMeta()],
+    afterBody: [],
     left: [
         Component.PageTitle(),
         Component.MobileOnly(Component.Spacer()),
@@ -66,4 +68,37 @@ export const defaultListPageLayout: PageLayout = {
         Component.Explorer(),
     ],
     right: [],
+}
+
+// homepage layout with blog cards at the top
+export const homePageLayout: PageLayout = {
+    beforeBody: [
+        Component.ArticleTitle(),
+        Component.ContentMeta(),
+        Component.TagList(),
+    ],
+    afterBody: [
+        Component.BlogCards({ limit: 6 }),
+    ],
+    left: [
+        Component.PageTitle(),
+        Component.MobileOnly(Component.Spacer()),
+        Component.Flex({
+            components: [
+                {
+                    Component: Component.Search(),
+                    grow: true,
+                },
+                { Component: Component.Darkmode() },
+                { Component: Component.ReaderMode() },
+            ],
+        }),
+        Component.Explorer(),
+    ],
+    right: [
+        Component.Graph(),
+        Component.DesktopOnly(Component.TableOfContents()),
+        Component.Backlinks(),
+        Component.RecentNotes(),
+    ],
 }

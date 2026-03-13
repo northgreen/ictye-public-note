@@ -6,8 +6,12 @@ import BodyConstructor from "../../components/Body"
 import { pageResources, renderPage } from "../../components/renderPage"
 import { FullPageLayout } from "../../cfg"
 import { pathToRoot } from "../../util/path"
-import { defaultContentPageLayout, sharedPageComponents } from "../../../quartz.layout"
-import { Content } from "../../components"
+import {
+  defaultContentPageLayout,
+  sharedPageComponents,
+  homePageLayout,
+} from "../../../quartz.layout"
+import { Content, BlogCards } from "../../components"
 import { styleText } from "util"
 import { write } from "./helpers"
 import { BuildCtx } from "../../util/ctx"
@@ -22,6 +26,7 @@ async function processContent(
   allFiles: QuartzPluginData[],
   opts: FullPageLayout,
   resources: StaticResources,
+  isHomePage: boolean = false,
 ) {
   const slug = fileData.slug!
   const cfg = ctx.cfg.configuration
@@ -36,7 +41,16 @@ async function processContent(
     allFiles,
   }
 
-  const content = renderPage(cfg, slug, componentData, opts, externalResources)
+  const pageLayout = isHomePage
+    ? {
+        ...opts,
+        beforeBody: [...(homePageLayout.beforeBody ?? []), ...opts.beforeBody],
+        afterBody: [...(homePageLayout.afterBody ?? []), ...opts.afterBody],
+        left: homePageLayout.left ?? opts.left,
+        right: homePageLayout.right ?? opts.right,
+      }
+    : opts
+  const content = renderPage(cfg, slug, componentData, pageLayout, externalResources)
   return write({
     ctx,
     content,
@@ -71,6 +85,7 @@ export const ContentPage: QuartzEmitterPlugin<Partial<FullPageLayout>> = (userOp
         ...left,
         ...right,
         Footer,
+        BlogCards({ limit: 6 }),
       ]
     },
     async *emit(ctx, content, resources) {
@@ -85,7 +100,8 @@ export const ContentPage: QuartzEmitterPlugin<Partial<FullPageLayout>> = (userOp
 
         // only process home page, non-tag pages, and non-index pages
         if (slug.endsWith("/index") || slug.startsWith("tags/")) continue
-        yield processContent(ctx, tree, file.data, allFiles, opts, resources)
+        const isHomePage = slug === "index"
+        yield processContent(ctx, tree, file.data, allFiles, opts, resources, isHomePage)
       }
 
       if (!containsIndex) {
@@ -114,7 +130,8 @@ export const ContentPage: QuartzEmitterPlugin<Partial<FullPageLayout>> = (userOp
         if (!changedSlugs.has(slug)) continue
         if (slug.endsWith("/index") || slug.startsWith("tags/")) continue
 
-        yield processContent(ctx, tree, file.data, allFiles, opts, resources)
+        const isHomePage = slug === "index"
+        yield processContent(ctx, tree, file.data, allFiles, opts, resources, isHomePage)
       }
     },
   }

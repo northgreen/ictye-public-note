@@ -28,13 +28,24 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: 22.x
-      - name: Build
+      - name: Install Depends
         shell: bash
         run: |
-          pwd
           npm install --save node-addon-api node-gyp
           npm audit fix
           npm i
+
+      - name: Cache dependencies
+        uses: actions/cache@v5
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Build
+        shell: bash
+        run: |
           npx quartz build -o ./dist/
 
       - name: Setup Pages
