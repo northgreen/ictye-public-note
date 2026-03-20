@@ -73,9 +73,6 @@ export const defaultListPageLayout: PageLayout = {
 // homepage layout with blog cards at the top
 export const homePageLayout: PageLayout = {
     beforeBody: [
-        Component.ArticleTitle(),
-        Component.ContentMeta(),
-        Component.TagList(),
     ],
     afterBody: [
         Component.BlogCards({ limit: 6 }),
