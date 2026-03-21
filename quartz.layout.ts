@@ -93,9 +93,6 @@ export const homePageLayout: PageLayout = {
         Component.Explorer(),
     ],
     right: [
-        Component.Graph(),
         Component.DesktopOnly(Component.TableOfContents()),
-        Component.Backlinks(),
-        Component.RecentNotes(),
     ],
 }
